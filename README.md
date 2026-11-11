@@ -6,6 +6,7 @@
 
 - 二维几何基础运算：欧氏距离、向量归一化、点积、叉积、线性插值、夹角计算
 - 轨迹处理：路径长度、净位移、定步长重采样、滑动窗口平滑
+- 安全性检查：点到线段距离、碰撞判定、首次碰撞下标、最小安全间隙
 - 零第三方依赖，兼容 Python 3.8 及以上版本
 - 完整中文注释与文档字符串，配套单元测试与 GitHub Actions CI
 
@@ -17,9 +18,11 @@ embodied-utils/
 ├── embodied_utils/            # 核心源码
 │   ├── __init__.py
 │   ├── geometry.py
+│   ├── safety.py
 │   └── trajectory.py
 ├── tests/                     # 单元测试
 │   ├── test_geometry.py
+│   ├── test_safety.py
 │   └── test_trajectory.py
 ├── .gitignore
 ├── pyproject.toml
@@ -42,6 +45,18 @@ from embodied_utils import path_length, resample_by_step
 trajectory = [(0.0, 0.0), (1.0, 0.0), (2.0, 0.0)]
 print(path_length(trajectory))            # 2.0
 print(resample_by_step(trajectory, 0.5))  # 按 0.5 的步长重采样
+```
+
+碰撞检测示例：
+
+```python
+from embodied_utils import first_collision_index
+
+trajectory = [(0.0, 0.0), (5.0, 0.0), (10.0, 0.0)]
+obstacles = [(5.0, 0.0, 0.5)]  # (x, y, radius)
+
+index = first_collision_index(trajectory, obstacles, robot_radius=0.3)
+print(index)  # 1，第 1 个航点与障碍物发生碰撞
 ```
 
 ## 协作流程验证

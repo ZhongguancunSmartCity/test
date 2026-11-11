@@ -7,6 +7,7 @@
 
 from typing import List, Sequence, Tuple
 
+from embodied_utils._validation import as_trajectory
 from embodied_utils.geometry import distance, lerp
 
 Point = Sequence[float]
@@ -22,7 +23,7 @@ def path_length(trajectory: Trajectory) -> float:
     :return: 轨迹总长度
     :raises ValueError: 当轨迹为 None 或航点格式非法时抛出
     """
-    points = _as_trajectory(trajectory)
+    points = as_trajectory(trajectory)
     total = 0.0
     for index in range(1, len(points)):
         total += distance(points[index - 1], points[index])
@@ -38,7 +39,7 @@ def total_displacement(trajectory: Trajectory) -> float:
     :return: 首末航点之间的欧氏距离
     :raises ValueError: 当轨迹为 None 或航点格式非法时抛出
     """
-    points = _as_trajectory(trajectory)
+    points = as_trajectory(trajectory)
     if len(points) < 2:
         return 0.0
     return distance(points[0], points[-1])
@@ -58,7 +59,7 @@ def resample_by_step(
     :return: 重采样后的航点列表
     :raises ValueError: 当步长非正数，或轨迹格式非法时抛出
     """
-    points = _as_trajectory(trajectory)
+    points = as_trajectory(trajectory)
     if step <= 0:
         raise ValueError("步长必须为正数，实际得到 {0}".format(step))
     if len(points) == 0:
@@ -98,7 +99,7 @@ def moving_average(
     :return: 平滑后的航点列表，长度与输入一致
     :raises ValueError: 当窗口小于 1，或轨迹格式非法时抛出
     """
-    points = _as_trajectory(trajectory)
+    points = as_trajectory(trajectory)
     if window < 1:
         raise ValueError("窗口大小必须为正整数，实际得到 {0}".format(window))
     if len(points) == 0:
@@ -114,21 +115,3 @@ def moving_average(
         avg_y = sum(float(p[1]) for p in window_points) / len(window_points)
         result.append((avg_x, avg_y))
     return result
-
-
-def _as_trajectory(trajectory: Trajectory) -> List[Point]:
-    """校验轨迹输入，返回可索引的航点列表。
-
-    这是模块内部的公共校验入口，保证对外抛出的异常类型保持一致。
-
-    :param trajectory: 待校验的轨迹航点序列
-    :return: 校验通过的航点列表
-    :raises ValueError: 轨迹为 None 或某个航点不是二维坐标时抛出
-    """
-    if trajectory is None:
-        raise ValueError("轨迹不能为 None")
-    points = list(trajectory)
-    for point in points:
-        if point is None or len(point) != 2:
-            raise ValueError("每个航点必须是包含 2 个分量的坐标")
-    return points

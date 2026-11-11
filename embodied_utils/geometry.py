@@ -8,6 +8,8 @@
 import math
 from typing import Sequence, Tuple
 
+from embodied_utils._validation import as_point
+
 Point = Sequence[float]
 Vector = Sequence[float]
 
@@ -20,8 +22,8 @@ def distance(p1: Point, p2: Point) -> float:
     :return: 两点间的欧氏距离，恒为非负数
     :raises ValueError: 当任意一点不是二维坐标时抛出
     """
-    x1, y1 = _as_point(p1)
-    x2, y2 = _as_point(p2)
+    x1, y1 = as_point(p1)
+    x2, y2 = as_point(p2)
     return math.hypot(x2 - x1, y2 - y1)
 
 
@@ -35,7 +37,7 @@ def normalize(vector: Vector) -> Tuple[float, float]:
     :return: 与入参同方向的单位向量
     :raises ValueError: 当入参不是二维坐标时抛出
     """
-    x, y = _as_point(vector)
+    x, y = as_point(vector)
     norm = math.hypot(x, y)
     if norm == 0.0:
         return (0.0, 0.0)
@@ -50,8 +52,8 @@ def dot(u: Vector, v: Vector) -> float:
     :return: 点积标量值
     :raises ValueError: 当任一向量不是二维坐标时抛出
     """
-    ux, uy = _as_point(u)
-    vx, vy = _as_point(v)
+    ux, uy = as_point(u)
+    vx, vy = as_point(v)
     return ux * vx + uy * vy
 
 
@@ -63,8 +65,8 @@ def cross(u: Vector, v: Vector) -> float:
     :return: 叉积的 z 分量，正值表示 v 相对 u 逆时针旋转
     :raises ValueError: 当任一向量不是二维坐标时抛出
     """
-    ux, uy = _as_point(u)
-    vx, vy = _as_point(v)
+    ux, uy = as_point(u)
+    vx, vy = as_point(v)
     return ux * vy - uy * vx
 
 
@@ -79,8 +81,8 @@ def lerp(a: Point, b: Point, t: float) -> Tuple[float, float]:
     :return: 插值得到的坐标
     :raises ValueError: 当任一坐标不是二维坐标时抛出
     """
-    ax, ay = _as_point(a)
-    bx, by = _as_point(b)
+    ax, ay = as_point(a)
+    bx, by = as_point(b)
     return (ax + (bx - ax) * t, ay + (by - ay) * t)
 
 
@@ -94,8 +96,8 @@ def vector_angle(u: Vector, v: Vector) -> float:
     :return: 两向量夹角，单位弧度
     :raises ValueError: 当任一向量不是二维坐标时抛出
     """
-    ux, uy = _as_point(u)
-    vx, vy = _as_point(v)
+    ux, uy = as_point(u)
+    vx, vy = as_point(v)
     norm_u = math.hypot(ux, uy)
     norm_v = math.hypot(vx, vy)
     if norm_u == 0.0 or norm_v == 0.0:
@@ -104,24 +106,3 @@ def vector_angle(u: Vector, v: Vector) -> float:
     cos_theta = (ux * vx + uy * vy) / (norm_u * norm_v)
     cos_theta = max(-1.0, min(1.0, cos_theta))
     return math.acos(cos_theta)
-
-
-def _as_point(point: Point) -> Tuple[float, float]:
-    """校验并拆分二维坐标，统一转换为 float。
-
-    这是模块内部的公共校验入口，保证对外抛出的异常类型保持一致。
-
-    :param point: 待校验的坐标序列
-    :return: 转换后的 ``(x, y)`` 元组
-    :raises ValueError: 维度不是 2 或包含非数值元素时抛出
-    """
-    if point is None:
-        raise ValueError("坐标不能为 None")
-    if len(point) != 2:
-        raise ValueError(
-            "坐标必须包含且仅包含 2 个分量，实际得到 {0} 个".format(len(point))
-        )
-    try:
-        return (float(point[0]), float(point[1]))
-    except (TypeError, ValueError):
-        raise ValueError("坐标分量必须是数值类型")

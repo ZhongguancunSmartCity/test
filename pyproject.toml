@@ -1,0 +1,14 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "embodied-utils"
+version = "0.1.0"
+description = "具身智能场景下的几何与轨迹处理工具集，同时用于验证分支保护与 PR 合并流程"
+readme = "README.md"
+requires-python = ">=3.8"
+authors = [{ name = "ZhongguancunSmartCity" }]
+
+[tool.setuptools]
+packages = ["embodied_utils"]

@@ -14,6 +14,12 @@ from embodied_utils.geometry import (
     normalize,
     vector_angle,
 )
+from embodied_utils.safety import (
+    first_collision_index,
+    is_collision,
+    min_clearance,
+    point_to_segment_distance,
+)
 from embodied_utils.trajectory import (
     moving_average,
     path_length,
@@ -30,6 +36,10 @@ __all__ = [
     "lerp",
     "normalize",
     "vector_angle",
+    "first_collision_index",
+    "is_collision",
+    "min_clearance",
+    "point_to_segment_distance",
     "moving_average",
     "path_length",
     "resample_by_step",

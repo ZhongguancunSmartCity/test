@@ -63,6 +63,9 @@ print(index)  # 1，第 1 个航点与障碍物发生碰撞
 
 本仓库用于验证 GitHub 的分支保护与合并策略，可按以下步骤操作：
 
+> 完整的单账号手动测试步骤（含预期输出、验收清单与常见问题）见
+> [GitHub 分支保护与 PR 合并流程 —— 手动测试手册](docs/github-workflow-test-guide.md)。
+
 1. 为 `main` 分支开启保护规则（要求 Pull Request 审核通过、并要求状态检查通过）
 2. 直接向 `main` 推送应被拒绝，提示 `protected branch` 相关错误
 3. 从 `main` 切出特性分支提交改动，推送后发起 Pull Request

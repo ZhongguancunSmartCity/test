@@ -106,3 +106,7 @@ def vector_angle(u: Vector, v: Vector) -> float:
     cos_theta = (ux * vx + uy * vy) / (norm_u * norm_v)
     cos_theta = max(-1.0, min(1.0, cos_theta))
     return math.acos(cos_theta)
+
+def clamp(value, lower, upper):
+    """将数值限制在 [lower, upper] 区间内。"""
+    return max(lower, min(upper, value))
